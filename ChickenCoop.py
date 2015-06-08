@@ -3,16 +3,16 @@ from time import sleep, time
 
 GPIO.setwarnings(False)
 
-relay_OFF = 1
-relay_ON = 0
+RELAY_OFF = 1
+RELAY_ON = 0
 
-motor_OFF = 0
-motor_ON = 1
+MOTOR_OFF = 0
+MOTOR_ON = 1
 
-dir_open = 0
-dir_closed = 1
+DIR_OPEN = 0
+DIR_CLOSED = 1
 
-door_timeout_sec = 12
+DOOR_TIMEOUT = 12
 
 relay_pins = {'socket1':6, 'socket2':13, 'socket3':19, 'socket4':26}
 motor_pins = {'dir':22, 'enable':17, 'brake':27}
@@ -26,12 +26,12 @@ GPIO.setmode(GPIO.BCM)
 # setup relay pins
 for pin in relay_pins.values():
 	GPIO.setup(pin, GPIO.OUT, pull_up_down=GPIO.PUD_DOWN)
-	GPIO.output(pin, relay_OFF)
+	GPIO.output(pin, RELAY_OFF)
 
 # setup motor pins
 for pin in motor_pins.values():
 	GPIO.setup(pin, GPIO.OUT, pull_up_down=GPIO.PUD_DOWN)
-	GPIO.output(pin, motor_OFF)
+	GPIO.output(pin, MOTOR_OFF)
 
 # setup limit switch pins
 for pin in limit_pins.values():
@@ -42,18 +42,18 @@ for pin in limit_pins.values():
 def testRelays():
 	for pin in relay_pins.values():
 		print str(pin) + "\n"
-		GPIO.output(pin, 0)
+		GPIO.output(pin, RELAY_ON)
 		sleep(1)
-		GPIO.output(pin, 1)
+		GPIO.output(pin, RELAY_OFF)
 		sleep(1)
 
 def testMotor():
-	GPIO.output(motor_pins['dir'], 0)
-	GPIO.output(motor_pins['enable'], 1)
+	GPIO.output(motor_pins['dir'], DIR_OPEN)
+	GPIO.output(motor_pins['enable'], MOTOR_ON)
 	sleep(1)
-	GPIO.output(motor_pins['dir'], 1)
+	GPIO.output(motor_pins['dir'], DIR_CLOSED)
 	sleep(1)
-	GPIO.output(motor_pins['enable'], 0)
+	GPIO.output(motor_pins['enable'], MOTOR_OFF)
 
 def testLimits():
 	for pin in limit_pins.values():
@@ -75,28 +75,28 @@ def doorStatus():
 
 def openDoor():
 	if (doorStatus() != 'open'):
-		GPIO.output(motor_pins['dir'],dir_open)
-		GPIO.output(motor_pins['enable'], 1)
+		GPIO.output(motor_pins['dir'], DIR_OPEN)
+		GPIO.output(motor_pins['enable'], MOTOR_ON)
 		
 		elapsed = 0
 		start = time()
-		while((doorStatus() != 'open') and elapsed < door_timeout_sec):
+		while((doorStatus() != 'open') and elapsed < DOOR_TIMEOUT):
 			elapsed = time() - start
 			pass
-		GPIO.output(motor_pins['enable'], 0)
+		GPIO.output(motor_pins['enable'], MOTOR_OFF)
 		return doorStatus()
 
 def closeDoor():
 	if (doorStatus() != 'closed'):
-		GPIO.output(motor_pins['dir'],dir_closed)
-		GPIO.output(motor_pins['enable'], 1)
+		GPIO.output(motor_pins['dir'], DIR_CLOSED)
+		GPIO.output(motor_pins['enable'], MOTOR_ON)
 
 		elapsed = 0
 		start = time()
-		while(doorStatus() != 'closed'):
+		while((doorStatus() != 'closed') and elapsed < DOOR_TIMEOUT):
 			elapsed = time() - start
 			pass
-		GPIO.output(motor_pins['enable'], 0)
+		GPIO.output(motor_pins['enable'], MOTOR_OFF)
 		return doorStatus()
 
 #-----------------------------------------------------------------#
