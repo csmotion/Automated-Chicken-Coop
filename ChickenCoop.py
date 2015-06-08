@@ -1,7 +1,8 @@
 import RPi.GPIO as GPIO
 from time import sleep, time
+import datetime
+import Temp
 
-GPIO.setwarnings(False)
 
 RELAY_OFF = 1
 RELAY_ON = 0
@@ -18,8 +19,16 @@ relay_pins = {'socket1':6, 'socket2':13, 'socket3':19, 'socket4':26}
 motor_pins = {'dir':22, 'enable':17, 'brake':27}
 limit_pins = {'open':24, 'closed':23}
 
+t1_SN = '000006c39295'
+t2_SN = '000006c40ed9'
+
+TIME_OPEN = datetime.time(7, 30, 0)
+TIME_CLOSE = datetime.time(20, 0, 0)
+
 # INITIALIZE GPIO
 #-----------------------------------------------------------------#
+GPIO.setwarnings(False)
+
 # choose BCM port numbering
 GPIO.setmode(GPIO.BCM)
 
@@ -99,11 +108,29 @@ def closeDoor():
 		GPIO.output(motor_pins['enable'], MOTOR_OFF)
 		return doorStatus()
 
+def checkTime():
+	time_curr = datetime.datetime.time(datetime.datetime.now())
+	#print time_curr
+
+	if TIME_OPEN <= TIME_CLOSE:
+		return TIME_OPEN <= time_curr <= TIME_CLOSE
+	else:
+		return TIME_OPEN <= time_curr or time_curr <= TIME_CLOSE
+
+def updateCoop():
+	if(checkTime()):
+		openDoor()
+	else:
+		closeDoor()
+
 #-----------------------------------------------------------------#
 if __name__ == "__main__":
 	#testRelays()
 	#testMotor()
 	print doorStatus()
-	print openDoor()
-	sleep(1)
-	print closeDoor()
+	#print openDoor()
+	#sleep(1)
+	#print closeDoor()
+
+	updateCoop()
+	#print checkTime(TIME_OPEN, TIME_CLOSE)
