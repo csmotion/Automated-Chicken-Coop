@@ -2,7 +2,7 @@ import RPi.GPIO as GPIO
 from time import sleep, time
 import datetime
 import Temp
-
+import sys
 
 RELAY_OFF = 1
 RELAY_ON = 0
@@ -19,8 +19,8 @@ relay_pins = {'socket1':6, 'socket2':13, 'socket3':19, 'socket4':26}
 motor_pins = {'dir':22, 'enable':17, 'brake':27}
 limit_pins = {'open':24, 'closed':23}
 
-t1_SN = '000006c39295'
-t2_SN = '000006c40ed9'
+T1_SN = '000006c39295'
+T2_SN = '000006c40ed9'
 
 TIME_OPEN = datetime.time(7, 30, 0)
 TIME_CLOSE = datetime.time(20, 0, 0)
@@ -125,12 +125,19 @@ def updateCoop():
 
 #-----------------------------------------------------------------#
 if __name__ == "__main__":
-	#testRelays()
-	#testMotor()
-	print doorStatus()
-	#print openDoor()
-	#sleep(1)
-	#print closeDoor()
+	if(len(sys.argv)>1):
+		if(sys.argv[1] == 'updateCoop'):
+			print 'updating Coop...'
+			updateCoop()
+		
+		if(sys.argv[1] == 'test'):
+			testRelays()
+			
+			#testMotor()
+			
+			print doorStatus()
+			
+			print openDoor()
+			sleep(1)
+			print closeDoor()
 
-	updateCoop()
-	#print checkTime(TIME_OPEN, TIME_CLOSE)
