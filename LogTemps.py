@@ -13,6 +13,6 @@ if __name__ == '__main__':
 
 	output = dt + ', ' + str(t1) + ', ' + str(t2) + '\n'
 	
-	with open("/usr/ChickenCoop/TempLog.txt", "a") as f:
+	with open("/usr/ChickenCoop/Log.txt", "a") as f:
 		f.write(output)
 		print output

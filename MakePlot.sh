@@ -19,4 +19,4 @@ set linetype 1 lw 2 lc rgb "blue"
 set linetype 2 lw 2 lc rgb "red"
 set grid x y
 
-plot "< tail -1440 /usr/ChickenCoop/TempLog.txt" using 1:2 with lines title "Temp 1", "< tail -1440 /usr/ChickenCoop/TempLog.txt" using 1:3 with lines title "Temp 2"
+plot "< tail -1440 /usr/ChickenCoop/Log.txt" using 1:2 with lines title "Temp 1", "< tail -1440 /usr/ChickenCoop/Log.txt" using 1:3 with lines title "Temp 2"

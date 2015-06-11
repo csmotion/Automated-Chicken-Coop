@@ -3,6 +3,7 @@ from time import sleep, time
 import datetime
 import Temp
 import sys
+import Email
 
 RELAY_OFF = 1
 RELAY_ON = 0
@@ -22,8 +23,8 @@ limit_pins = {'open':24, 'closed':23}
 T1_SN = '000006c39295'
 T2_SN = '000006c40ed9'
 
-TIME_OPEN = datetime.time(7, 30, 0)
-TIME_CLOSE = datetime.time(20, 0, 0)
+TIME_OPEN = datetime.time(7, 15, 0)
+TIME_CLOSE = datetime.time(8, 45, 0)
 
 # INITIALIZE GPIO
 #-----------------------------------------------------------------#
@@ -119,9 +120,12 @@ def checkTime():
 
 def updateCoop():
 	if(checkTime()):
-		openDoor()
+		if(openDoor() != 'open'):
+			Email.sendMessage('ChickenCoop','FAULT - DOOR OPEN')
 	else:
-		closeDoor()
+		if(closeDoor() != 'closed'):
+			Email.sendMessage('ChickenCoop','FAULT - DOOR CLOSED')
+
 
 #-----------------------------------------------------------------#
 if __name__ == "__main__":
